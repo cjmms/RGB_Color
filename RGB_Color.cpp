@@ -1,4 +1,3 @@
-
 #ifdef __APPLE__
 #include <OpenGL/Opengl.h>
 #include <GLUT/glut.h>
@@ -18,16 +17,6 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60.0, 1, 1.0, 20.0);  // specify a viewing frustum
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(5.0, 5.0, 5.0,
-		0.0, 0.0, 0.0,
-		0.0, 1.0, 0.0);
-
-	//glLoadIdentity();	
 	
 	// OK
 	glBegin(GL_POLYGON);
@@ -85,7 +74,6 @@ void display()
 
 int main(int argc, char *argv[])
 {
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutCreateWindow("EVA");
@@ -94,6 +82,18 @@ int main(int argc, char *argv[])
 
 	// register callback func
 	glutDisplayFunc(display);
+
+
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-5.0,5.0,-5.0,5.0,-5.0,5.0);
+
+	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+	gluLookAt(	1.0, 1.0, 1.0, 
+				0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0 );
 
 	glutMainLoop();
 	return 0;
