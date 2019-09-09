@@ -11,24 +11,69 @@
 #include <stdlib.h>
 
 
-
-
-
+double side_length = 0.5;
 
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT);	
-	//设置alpha通道透明度
-	glEnable(GL_BLEND);  //开启混合模式
-	glDisable(GL_DEPTH_TEST);  //关闭深度测试
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-	glColor4f(1,1,0,1); 
-	glRectf(-0.5,-0.5,0.8,0.8);
-	glFinish();
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
+	glLoadIdentity();	
+	
+	// front
+	glBegin(GL_POLYGON);
+  	glColor3f( 1.0, 0.0, 1.0 );     glVertex3f(  side_length, -1 * side_length, -1 * side_length );      
+  	glColor3f( 1.0, 1.0, 1.0 );     glVertex3f(  side_length,  side_length, -1 * side_length );      
+  	glColor3f( 0.0, 1.0, 1.0 );     glVertex3f( -1 * side_length,  side_length, -1 * side_length );     
+  	glColor3f( 0.0, 0.0, 1.0 );     glVertex3f( -1 * side_length, -1 * side_length, -1 * side_length );      
+	glEnd();
 
-	glutSwapBuffers();
-
+  	// White side  BACK
+  	glBegin(GL_POLYGON);
+  	glColor3f(   1.0,  1.0, 1.0 );
+  	glVertex3f(  side_length, -1 * side_length, side_length );
+  	glVertex3f(  side_length,  side_length, side_length );
+  	glVertex3f( -1 * side_length,  side_length, side_length );
+  	glVertex3f( -1 * side_length, -1 * side_length, side_length );
+  	glEnd();
+ 
+  	// Purple side  RIGHT
+  	glBegin(GL_POLYGON);
+  	glColor3f(  1.0,  0.0,  1.0 );
+  	glVertex3f( side_length, -1 * side_length, -1 * side_length );
+  	glVertex3f( side_length,  side_length, -1 * side_length );
+  	glVertex3f( side_length,  side_length,  side_length );
+  	glVertex3f( side_length, -1 * side_length,  side_length );
+  	glEnd();
+ 
+  	// Green side  LEFT
+  	glBegin(GL_POLYGON);
+  	glColor3f(   0.0,  1.0,  0.0 );
+  	glVertex3f( -1 * side_length, -1 * side_length,  side_length );
+  	glVertex3f( -1 * side_length,  side_length,  side_length );
+  	glVertex3f( -1 * side_length,  side_length, -1 * side_length );
+  	glVertex3f( -1 * side_length, -1 * side_length, -1 * side_length );
+  	glEnd();
+ 
+  	// Blue side  TOP
+  	glBegin(GL_POLYGON);
+  	glColor3f(   0.0,  0.0,  1.0 );
+  	glVertex3f(  side_length,  side_length,  side_length );
+  	glVertex3f(  side_length,  side_length, -1 * side_length );
+  	glVertex3f( -1 * side_length,  side_length, -1 * side_length );
+  	glVertex3f( -1 * side_length,  side_length,  side_length );
+  	glEnd();
+ 
+  	// Red side  BOTTOM
+  	glBegin(GL_POLYGON);
+  	glColor3f(   1.0,  0.0,  0.0 );
+  	glVertex3f(  side_length, -1 * side_length, -1 * side_length );
+  	glVertex3f(  side_length, -1 * side_length,  side_length );
+  	glVertex3f( -1 * side_length, -1 * side_length,  side_length );
+  	glVertex3f( -1 * side_length, -1 * side_length, -1 * side_length );
+  	glEnd();
+ 
+  	glFlush();
+  	glutSwapBuffers();
 }
 
 
@@ -37,10 +82,9 @@ int main(int argc, char *argv[])
 {
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(480, 480);
-	glutInitWindowPosition(200, 200);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutCreateWindow("EVA");
+	glEnable(GL_DEPTH_TEST);
 
 
 	// register callback func
@@ -49,3 +93,6 @@ int main(int argc, char *argv[])
 	glutMainLoop();
 	return 0;
 }
+
+
+
