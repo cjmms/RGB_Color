@@ -12,14 +12,22 @@
 
 
 double side_length = 2.0;
-double alpha = 0.3;
+double alpha = 0.5;
+double screenWidth = 500; 
+double recLength = screenWidth;	
 
-double polygonVertices[] = 
-{
-	20, 100, 0,
-	40, 100, 0,
-	60, 150, 0
-};
+float recLengthConvert(double length) {
+	if (length > screenWidth / 2)
+	{
+		return (length - (screenWidth / 2)) / (screenWidth / 2);
+	} else if (length < 250) {
+		return ((screenWidth / 2) - (length )) / (screenWidth / 2) * -1.0f;
+	} else if (length == 250) {
+		return 0;
+	} else {
+		return -2.0f;	// ERROR
+	}
+}
 
 void display()
 {
@@ -27,8 +35,11 @@ void display()
 
 	glMatrixMode(GL_PROJECTION);
 
+printf("rec: %f\n", recLengthConvert(recLength));
 	// draw the white bar at the bottom of the screen
-	glRectf(-1.0f,-1.0f, 1.0f, -0.9f);
+
+	glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
+	//glRectf(-1.0f, -1.0f, 1.0f, -0.9f);
 
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -40,8 +51,9 @@ void display()
 				0.0, 0.0, 0.0,
 				0.0, 1.0, 0.0 );
 
+	//glRectf(-1.0f, -1.0f, 1.0f, -0.9f);
 
-	
+
 	// OK
 	glBegin(GL_POLYGON);
   	glColor4f( 1.0, 0.0, 0.0, alpha);     glVertex3f(  side_length, -1 * side_length, -1 * side_length );      
@@ -89,20 +101,37 @@ void display()
   	glColor4f( 0.0, 0.0, 1.0, alpha);		glVertex3f( -1 * side_length, -1 * side_length,  side_length );
   	glColor4f( 0.0, 0.0, 0.0, alpha);		glVertex3f( -1 * side_length, -1 * side_length, -1 * side_length );
   	glEnd();
-
 	
  
   	glFlush();
   	glutSwapBuffers();
 }
 
+void processNormalKeys(unsigned char key,int x,int y) 
+{ 
+    if(key==27) 
+        exit(0); 
+} 
 
+
+void processMouse(int button,int state,int x,int y)
+{
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		if (y >= 475){
+			printf("x: %d, y: %d\n", x, y);
+			recLength = x;
+			printf("conversion: %f\n", recLengthConvert(x));
+			display();
+		}
+	} 
+}
 
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(480, 480);
+	glutInitWindowSize(500, screenWidth);
 	glutInitWindowPosition(400, 400);
 	glutCreateWindow("RGB_Cube");
 
@@ -114,7 +143,9 @@ int main(int argc, char *argv[])
 
 	// register callback func
 	glutDisplayFunc(display);
-
+	glutKeyboardFunc(processNormalKeys);
+	glutMouseFunc(processMouse);
+	//glutIdleFunc(display);
 
 	// glMatrixMode(GL_PROJECTION);
     // glLoadIdentity();
