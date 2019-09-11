@@ -12,48 +12,11 @@
 
 
 double side_length = 2.0;
-double alpha = 0.5;
+double alpha = 1.0;
 double screenWidth = 500; 
 double recLength = screenWidth;	
 
-float recLengthConvert(double length) {
-	if (length > screenWidth / 2)
-	{
-		return (length - (screenWidth / 2)) / (screenWidth / 2);
-	} else if (length < 250) {
-		return ((screenWidth / 2) - (length )) / (screenWidth / 2) * -1.0f;
-	} else if (length == 250) {
-		return 0;
-	} else {
-		return -2.0f;	// ERROR
-	}
-}
-
-void display()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glMatrixMode(GL_PROJECTION);
-
-printf("rec: %f\n", recLengthConvert(recLength));
-	// draw the white bar at the bottom of the screen
-
-	glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
-	//glRectf(-1.0f, -1.0f, 1.0f, -0.9f);
-
-	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-5.0,5.0,-5.0,5.0,-5.0,5.0);
-	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-	gluLookAt(	1.0, 1.0, 1.0, 
-				0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0 );
-
-	//glRectf(-1.0f, -1.0f, 1.0f, -0.9f);
-
-
+void drawCube() {
 	// OK
 	glBegin(GL_POLYGON);
   	glColor4f( 1.0, 0.0, 0.0, alpha);     glVertex3f(  side_length, -1 * side_length, -1 * side_length );      
@@ -101,9 +64,43 @@ printf("rec: %f\n", recLengthConvert(recLength));
   	glColor4f( 0.0, 0.0, 1.0, alpha);		glVertex3f( -1 * side_length, -1 * side_length,  side_length );
   	glColor4f( 0.0, 0.0, 0.0, alpha);		glVertex3f( -1 * side_length, -1 * side_length, -1 * side_length );
   	glEnd();
+}
+
+
+float recLengthConvert(double length) {
+	if (length > screenWidth / 2)
+	{
+		return (length - (screenWidth / 2)) / (screenWidth / 2);
+	} else if (length < 250) {
+		return ((screenWidth / 2) - (length )) / (screenWidth / 2) * -1.0f;
+	} else if (length == 250) {
+		return 0;
+	} else {
+		return -2.0f;	// ERROR
+	}
+}
+
+void display()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-5.0,5.0,-5.0,5.0,-5.0,5.0);
+	glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+	gluLookAt(	1.0, 1.0, 1.0, 
+				0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0 );
+
+	drawCube();
+
+	// draw the white bar at the bottom of the screen
+	glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
 	
+	//glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
  
-  	glFlush();
   	glutSwapBuffers();
 }
 
@@ -145,21 +142,8 @@ int main(int argc, char *argv[])
 	glutDisplayFunc(display);
 	glutKeyboardFunc(processNormalKeys);
 	glutMouseFunc(processMouse);
-	//glutIdleFunc(display);
 
-	// glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-    // glOrtho(-5.0,5.0,-5.0,5.0,-5.0,5.0);
-	// glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
-
-	// gluLookAt(	1.0, 1.0, 1.0, 
-	// 			0.0, 0.0, 0.0,
-	// 			0.0, 1.0, 0.0 );
 
 	glutMainLoop();
 	return 0;
 }
-
-
-
