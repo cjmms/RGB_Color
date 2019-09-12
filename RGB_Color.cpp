@@ -80,15 +80,16 @@ float recLengthConvert(double length) {
 	}
 }
 
+// draw the white bar at the bottom of the scree
 void drawRec() 
 {
 	glBegin(GL_POLYGON);
-	double offset = 2.6;
-  	glColor4f( 1.0, 1.0, 1.0, alpha);		
-	glVertex3f( 0 - offset, -4.5, side_length + offset);		// top left
-  	glVertex3f( 0 - offset, -5.5, side_length + offset );		// bottom left
-	glVertex3f( side_length + offset, -5.5, 0 - offset );		// bottom right 
-  	glVertex3f( side_length + offset, -4.5, 0 - offset );		// top right
+  	double offset = 6.5;
+	glColor4f( 1.0, 1.0, 1.0, alpha);		
+	glVertex3f( 0 , -2.3, side_length + offset);		// top left
+  	glVertex3f( 0 , -3.5, side_length + offset );		// bottom left
+	glVertex3f( side_length + offset, -3.5, 0 );		// bottom right 
+  	glVertex3f( side_length + offset, -2.3, 0 );		// top right
   	glEnd();
 }
 
@@ -98,7 +99,8 @@ void display()
 
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-5.0,5.0,-5.0,5.0,-5.0,5.0);
+	double clipping  = 6;
+    glOrtho(-1 * clipping, clipping, -1 * clipping, clipping, -1 * clipping, clipping);
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -107,13 +109,7 @@ void display()
 				0.0, 1.0, 0.0 );
 
 	drawCube();
-
 	drawRec();
-
-	// draw the white bar at the bottom of the screen
-	//glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
-	
-	//glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
  
   	glutSwapBuffers();
 }
