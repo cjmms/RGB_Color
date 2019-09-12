@@ -15,7 +15,8 @@
 double side_length = 2.0;
 double screenWidth = 500;
 double color_value =  1.0;
-double recLength = screenWidth;
+double x_offset = 8.5;
+double z_offset = 0;
 double rec_offset = 8.5;
 double rec_length = 8.5 * sqrt(2); 	
 
@@ -79,8 +80,8 @@ void drawRec()
 	glColor3f( 1, 1, 1);		
 	glVertex3f( 0 , -2.3, rec_offset);		// top left
   	glVertex3f( 0 , -3.5, rec_offset );		// bottom left
-	glVertex3f( rec_offset, -3.5, 0 );		// bottom right 
-  	glVertex3f( rec_offset, -2.3, 0 );		// top right
+	glVertex3f( x_offset, -3.5, z_offset );		// bottom right 
+  	glVertex3f( x_offset, -2.3, z_offset );		// top right
   	glEnd();
 }
 
@@ -109,6 +110,9 @@ void processMouse(int button,int state,int x,int y)
 			printf("x: %d, y: %d\n", x, y);
 			//recLength = x;
 			color_value = 1.0 * x / screenWidth;		// change color base on length of slider
+			x_offset = 1.0 * x * rec_offset / screenWidth ;
+			
+			z_offset = rec_offset - x_offset;
 			//printf("conversion: %f\n", recLengthConvert(x));
 			display();
 		}
