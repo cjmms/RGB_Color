@@ -11,14 +11,19 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define SCALE 0
+#define FIXED 1
 
-double side_length = 2.0;
+
+double side_length = 2.0;	// side length of cube
 double screenWidth = 500;
-double color_value =  1.0;
-double x_offset = 8.5;
-double z_offset = 0;
-double rec_offset = 8.5;
-double rec_length = 8.5 * sqrt(2); 	
+double color_value =  1.0;	
+double x_offset = 8.5;	// x offset to move slider
+double z_offset = 0;	// z offset to move slider
+double rec_offset = 8.5;	// original position for slider
+
+bool isFixed = false;		// cube state
+	
 
 void drawCube() {
 	// OK
@@ -72,9 +77,8 @@ void drawCube() {
 
 
 
-
 // draw the white bar at the bottom of the scree
-void drawRec() 
+void drawSlider() 
 {
 	glBegin(GL_POLYGON);
 	glColor3f( 1, 1, 1);		
@@ -90,7 +94,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	drawCube();
-	drawRec();
+	drawSlider();
  
   	glutSwapBuffers();
 }
@@ -101,19 +105,40 @@ void processNormalKeys(unsigned char key,int x,int y)
         exit(0); 
 } 
 
+void processMenuEvents(int option)
+{
+	switch (option) {
+	case SCALE:
+		isFixed = false;
+		break;
+	case FIXED:
+		isFixed = true;
+		break;
+	}
+}
+
+void createMenu() {
+	int menu = glutCreateMenu(processMenuEvents);
+
+	// add entries
+	glutAddMenuEntry("Scale", SCALE);
+	glutAddMenuEntry("Fixed", FIXED);
+
+	// menu pops up when right button is pressed
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
 
 void processMouse(int button,int state,int x,int y)
 {
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		if (y >= 475){
-			printf("x: %d, y: %d\n", x, y);
-			//recLength = x;
+		if (y >= 475){	// click slider
+			//printf("x: %d, y: %d\n", x, y);
 			color_value = 1.0 * x / screenWidth;		// change color base on length of slider
-			x_offset = 1.0 * x * rec_offset / screenWidth ;
-			
-			z_offset = rec_offset - x_offset;
-			//printf("conversion: %f\n", recLengthConvert(x));
+			if (!isFixed) side_length = 1.0 * x / screenWidth * 2;				// change cube size
+			x_offset = 1.0 * x * rec_offset / screenWidth ;		// move x value
+			z_offset = rec_offset - x_offset;					// move z value
 			display();
 		}
 	} 
@@ -149,6 +174,7 @@ int main(int argc, char *argv[])
 	glutCreateWindow("RGB_Cube");
 
 	init();
+	createMenu();
 
 	// register callback func
 	glutDisplayFunc(display);
