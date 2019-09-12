@@ -80,6 +80,18 @@ float recLengthConvert(double length) {
 	}
 }
 
+void drawRec() 
+{
+	glBegin(GL_POLYGON);
+	double offset = 2.6;
+  	glColor4f( 1.0, 1.0, 1.0, alpha);		
+	glVertex3f( 0 - offset, -4.5, side_length + offset);		// top left
+  	glVertex3f( 0 - offset, -5.5, side_length + offset );		// bottom left
+	glVertex3f( side_length + offset, -5.5, 0 - offset );		// bottom right 
+  	glVertex3f( side_length + offset, -4.5, 0 - offset );		// top right
+  	glEnd();
+}
+
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -96,8 +108,10 @@ void display()
 
 	drawCube();
 
+	drawRec();
+
 	// draw the white bar at the bottom of the screen
-	glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
+	//glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
 	
 	//glRectf(-1.0f, -1.0f, recLengthConvert(recLength), -0.9f);
  
