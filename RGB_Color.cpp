@@ -20,14 +20,16 @@ using namespace std;
 
 double side_length = 2.0;	// side length of cube
 double screenWidth = 500;
+double screenHeight = 500;
 double color_value =  1.0;	
 double x_offset = 8.5;	// x offset to move slider
 double z_offset = 0;	// z offset to move slider
 double rec_offset = 8.5;	// original position for slider
+GLfloat pixels[3];
+int color_win;
 
 bool isFixed = false;		// cube state
 
-struct{ GLubyte red, green, blue; } pixel;
 	
 
 void drawCube() {
@@ -81,7 +83,6 @@ void drawCube() {
 }
 
 
-
 // draw the white bar at the bottom of the scree
 void drawSlider() 
 {
@@ -104,10 +105,25 @@ void display()
   	glutSwapBuffers();
 }
 
+void changeBackground() 
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor( pixels[0],  pixels[1],  pixels[2], 1.0);
+
+  	glutSwapBuffers();
+}
+
+void showColor(int x, int y) 
+{
+	glReadBuffer( GL_FRONT );	// need this, otherwise it's black
+    glReadPixels(x, screenHeight-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+	glutSetWindow(color_win);
+	changeBackground();
+}
+
 void processNormalKeys(unsigned char key,int x,int y) 
 { 
-    if(key==27) 
-        exit(0); 
+    if(key==27) exit(0); 
 } 
 
 void processMenuEvents(int option)
@@ -138,7 +154,8 @@ void processMouse(int button,int state,int x,int y)
 {
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		if (y >= 475){	// click slider
+		if (y >= 475)
+		{	// click slider
 			color_value = 1.0 * x / screenWidth;		// change color base on length of slider
 			if (!isFixed) side_length = 1.0 * x / screenWidth * 2;				// change cube size
 			x_offset = 1.0 * x * rec_offset / screenWidth ;		// move x value
@@ -146,19 +163,13 @@ void processMouse(int button,int state,int x,int y)
 			display();
 		} 
 		else 
-		{
-			GLfloat pixels[3];
-			glReadBuffer( GL_FRONT );	// need this, otherwise it's black
-    		glReadPixels(x, 500-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
-			glClearColor( pixels[0],  pixels[1],  pixels[2], 1.0);
-    		cout << "R: " << pixels[0] * 255 << endl;
-    		cout << "G: " << pixels[1] * 255 << endl;
-    		cout << "B: " << pixels[2] * 255 << endl;
-			cout << '\n' << endl;
-			display();
-		}
+			showColor(x, y);
 	} 
+	else if (button == GLUT_LEFT_BUTTON && state != GLUT_DOWN) 
+		showColor(x, y);
 }
+
+
 
 
 
@@ -168,6 +179,7 @@ void init()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -181,14 +193,16 @@ void init()
 				0.0, side_length / 2, 0.0 );
 }
 
+
+
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
+	// win 1
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(500, screenWidth);
+	glutInitWindowSize(screenHeight, screenWidth);
 	glutInitWindowPosition(400, 400);
 	glutCreateWindow("RGB_Cube");
-
 
 	init();
 	createMenu();
@@ -197,7 +211,16 @@ int main(int argc, char *argv[])
 	glutDisplayFunc(display);
 	glutKeyboardFunc(processNormalKeys);
 	glutMouseFunc(processMouse);
-	
+	glutMotionFunc(showColor);
+
+	// win 2
+	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitWindowSize(screenHeight, screenWidth);
+	glutInitWindowPosition(1000, 400);
+	color_win = glutCreateWindow("RGB_Cube!!!");
+	init();
+	glutDisplayFunc(changeBackground);
+
 	glutMainLoop();
 	return 0;
 }
