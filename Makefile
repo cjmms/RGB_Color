@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall
-PROG = test
+PROG = RGB_Color
 
 SRCS = RGB_Color.cpp
 

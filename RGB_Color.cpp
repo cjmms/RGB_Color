@@ -21,7 +21,6 @@ using namespace std;
 #define SCALE 0
 #define FIXED 1
 
-
 double side_length = 2.0;	// side length of cube
 double screenWidth = 500;
 double screenHeight = 500;
@@ -30,20 +29,16 @@ double x_offset = 8.5;	// x offset to move slider
 double z_offset = 0;	// z offset to move slider
 double rec_offset = 8.5;	// original position for slider
 GLfloat pixels[3];
-//GLfloat hsv[3];
 int color_win;
 string title;
-
 bool isFixed = false;		// cube state
-
-
 
 typedef struct hsv{
     double h;       // angle in degrees
     double s;       // a fraction between 0 and 1
     double v;       // a fraction between 0 and 1
 } hsv;
-
+	
 	
 
 void drawCube() {
@@ -120,7 +115,7 @@ void display()
 }
 
 
-
+// https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 struct hsv rgb2hsv()
 {
     struct hsv         out;
@@ -198,10 +193,10 @@ void changeBackground()
 void showColor(int x, int y) 
 {
 	if (y < 475) {
-	glReadBuffer( GL_FRONT );	// need this, otherwise it's black
-    glReadPixels(x, screenHeight-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
-	glutSetWindow(color_win);
-	changeBackground();
+		glReadBuffer( GL_FRONT );	// need this, otherwise it's black
+    	glReadPixels(x, screenHeight-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+		glutSetWindow(color_win);
+		changeBackground();
 	}
 }
 
@@ -263,7 +258,6 @@ void init()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
