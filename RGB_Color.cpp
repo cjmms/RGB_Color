@@ -12,6 +12,9 @@
 #include <math.h>
 #include <iostream>
 #include <string.h>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -27,10 +30,19 @@ double x_offset = 8.5;	// x offset to move slider
 double z_offset = 0;	// z offset to move slider
 double rec_offset = 8.5;	// original position for slider
 GLfloat pixels[3];
+//GLfloat hsv[3];
 int color_win;
 string title;
 
 bool isFixed = false;		// cube state
+
+
+
+typedef struct hsv{
+    double h;       // angle in degrees
+    double s;       // a fraction between 0 and 1
+    double v;       // a fraction between 0 and 1
+} hsv;
 
 	
 
@@ -107,9 +119,70 @@ void display()
   	glutSwapBuffers();
 }
 
+
+
+struct hsv rgb2hsv()
+{
+    struct hsv         out;
+    double      min, max, delta;
+
+    min = pixels[0] < pixels[1] ? pixels[0] : pixels[1];
+    min = min  < pixels[2] ? min  : pixels[2];
+
+    max = pixels[0] > pixels[1] ? pixels[0] : pixels[1];
+    max = max  > pixels[2] ? max  : pixels[2];
+
+    out.v = max;                                // v
+    delta = max - min;
+    if (delta < 0.00001)
+    {
+        out.s = 0;
+        out.h = 0; // undefined, maybe nan?
+        return out;
+    }
+    if( max > 0.0 ) { // NOTE: if Max is == 0, this divide would cause a crash
+        out.s = (delta / max);                  // s
+    } else {
+        // if max is 0, then r = g = b = 0              
+        // s = 0, h is undefined
+        out.s = 0.0;
+        out.h = NAN;                            // its now undefined
+        return out;
+    }
+    if( pixels[0] >= max )                           // > is bogus, just keeps compilor happy
+        out.h = ( pixels[1] - pixels[2] ) / delta;        // between yellow & magenta
+    else
+    if( pixels[1] >= max )
+        out.h = 2.0 + ( pixels[2] - pixels[0] ) / delta;  // between cyan & yellow
+    else
+        out.h = 4.0 + ( pixels[0] - pixels[1] ) / delta;  // between magenta & cyan
+
+    out.h *= 60.0;                              // degrees
+
+    if( out.h < 0.0 )
+        out.h += 360.0;
+
+    return out;
+}
+
+
+
 void toString() 
 {
-	title =  "RGB: ( " + to_string((int)(255 * pixels[0])) + ", " + to_string((int)(255 * pixels[1])) + ", " + to_string((int)(255 * pixels[2])) + " )";
+	stringstream stream;
+	stream << "RGB: ( " 
+					<< std::fixed << std::setprecision(2) << pixels[0] << ", "
+					<< std::fixed << std::setprecision(2) << pixels[1] << ", "
+					<< std::fixed << std::setprecision(2) << pixels[2] << ") = ";
+
+	hsv result = rgb2hsv();
+
+	stream << "HSV: ( " 
+					<< std::fixed << std::setprecision(2) << result.h << ", "
+					<< std::fixed << std::setprecision(2) << result.s << ", "
+					<< std::fixed << std::setprecision(2) << result.v << ") ";
+
+	title =  stream.str();
 }
 
 void changeBackground() 
@@ -124,10 +197,12 @@ void changeBackground()
 
 void showColor(int x, int y) 
 {
+	if (y < 475) {
 	glReadBuffer( GL_FRONT );	// need this, otherwise it's black
     glReadPixels(x, screenHeight-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
 	glutSetWindow(color_win);
 	changeBackground();
+	}
 }
 
 void processNormalKeys(unsigned char key,int x,int y) 
@@ -175,7 +250,7 @@ void processMouse(int button,int state,int x,int y)
 			showColor(x, y);
 	} 
 	else if (button == GLUT_LEFT_BUTTON && state != GLUT_DOWN) 
-		showColor(x, y);
+		if (y < 475) showColor(x, y);
 }
 
 
