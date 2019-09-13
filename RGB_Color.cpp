@@ -7,9 +7,12 @@
 #include <GL/glut.h>
 #endif
 
-#include "stdio.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
 
 #define SCALE 0
 #define FIXED 1
@@ -23,6 +26,8 @@ double z_offset = 0;	// z offset to move slider
 double rec_offset = 8.5;	// original position for slider
 
 bool isFixed = false;		// cube state
+
+struct{ GLubyte red, green, blue; } pixel;
 	
 
 void drawCube() {
@@ -140,6 +145,16 @@ void processMouse(int button,int state,int x,int y)
 			x_offset = 1.0 * x * rec_offset / screenWidth ;		// move x value
 			z_offset = rec_offset - x_offset;					// move z value
 			display();
+
+		} 
+		else 
+		{
+			GLfloat pixels[3];
+			glReadBuffer( GL_FRONT );
+    		glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+    		cout << "R: " << pixels[0] * 255 << endl;
+    		cout << "G: " << pixels[1] * 255 << endl;
+    		cout << "B: " << pixels[2] * 255 << endl;
 		}
 	} 
 }
