@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
@@ -27,6 +28,7 @@ double z_offset = 0;	// z offset to move slider
 double rec_offset = 8.5;	// original position for slider
 GLfloat pixels[3];
 int color_win;
+string title;
 
 bool isFixed = false;		// cube state
 
@@ -105,10 +107,17 @@ void display()
   	glutSwapBuffers();
 }
 
+void toString() 
+{
+	title =  "RGB: ( " + to_string((int)(255 * pixels[0])) + ", " + to_string((int)(255 * pixels[1])) + ", " + to_string((int)(255 * pixels[2])) + " )";
+}
+
 void changeBackground() 
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor( pixels[0],  pixels[1],  pixels[2], 1.0);
+	toString();
+	glutSetWindowTitle(title.c_str());
 
   	glutSwapBuffers();
 }
