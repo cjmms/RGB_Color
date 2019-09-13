@@ -139,22 +139,23 @@ void processMouse(int button,int state,int x,int y)
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		if (y >= 475){	// click slider
-			//printf("x: %d, y: %d\n", x, y);
 			color_value = 1.0 * x / screenWidth;		// change color base on length of slider
 			if (!isFixed) side_length = 1.0 * x / screenWidth * 2;				// change cube size
 			x_offset = 1.0 * x * rec_offset / screenWidth ;		// move x value
 			z_offset = rec_offset - x_offset;					// move z value
 			display();
-
 		} 
 		else 
 		{
 			GLfloat pixels[3];
-			glReadBuffer( GL_FRONT );
-    		glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+			glReadBuffer( GL_FRONT );	// need this, otherwise it's black
+    		glReadPixels(x, 500-y, 1, 1, GL_RGB, GL_FLOAT, pixels);
+			glClearColor( pixels[0],  pixels[1],  pixels[2], 1.0);
     		cout << "R: " << pixels[0] * 255 << endl;
     		cout << "G: " << pixels[1] * 255 << endl;
     		cout << "B: " << pixels[2] * 255 << endl;
+			cout << '\n' << endl;
+			display();
 		}
 	} 
 }
@@ -187,6 +188,7 @@ int main(int argc, char *argv[])
 	glutInitWindowSize(500, screenWidth);
 	glutInitWindowPosition(400, 400);
 	glutCreateWindow("RGB_Cube");
+
 
 	init();
 	createMenu();
